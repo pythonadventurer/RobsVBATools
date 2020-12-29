@@ -2,7 +2,7 @@ Attribute VB_Name = "modDocZim"
 Option Compare Database
 Option Explicit
 'Change this constant as needed depending on where the documenation is to be created.
-Const DocumentationDirectory As String = "C:\Users\robf\Documents\Working\Development\DatabaseAutoDocumentation"
+Const DocumentationDirectory As String = "C:\Users\robf\Documents\Working\Notebooks\DatabaseDocumentation"
 
 'Create plain text documentation of the database, including:
 '
@@ -215,7 +215,7 @@ Sub DocFormZim(strFormName As String, strOutputFile As String)
 End Sub
 Sub DocTableZim(strTableName As String, strOutputFile As String)
 
-Dim db As Database
+Dim db As DAO.Database
 Dim tdfTableDef As TableDef
 Dim fldField As Field
 Dim colTxtLines As New Collection
@@ -264,7 +264,7 @@ Set colTxtLines = Nothing
 End Sub
 Sub DocQueryZim(strQueryName As String, OutputFile As String)
 
-Dim db As Database
+Dim db As DAO.Database
 Dim qryQueryDef As QueryDef
 Dim colTxtLines As New Collection
 
@@ -361,7 +361,7 @@ End Sub
 Sub DocZim()
 
 Dim resp As Integer
-resp = MsgBox("WARNING -- This will DELETE and RE-CREATE all existing documentation in folder: " & vbNewLine & DocumentationDirectory & " !" & _
+resp = MsgBox("WARNING -- This will DELETE and RE-CREATE all existing documentation for this database in folder: " & vbNewLine & DocumentationDirectory & " !" & _
               vbNewLine & vbNewLine & "Are you sure?", vbYesNo, "Confirm")
               
 If resp = vbNo Then
@@ -403,10 +403,7 @@ varFolders.Add ("Modules")
 varDbDocFolder = objFileSystem.BuildPath(DocumentationDirectory, varDbName)
  
  
-If FolderExists(varDbDocFolder) Then
-    objFileSystem.DeleteFolder (varDbDocFolder)
-
-End If
+On Error GoTo ErrorHandler
 
 objFileSystem.CreateFolder (varDbDocFolder)
  
@@ -505,6 +502,16 @@ Next varTableDef
 
 MsgBox ("Documentation of database '" & varDbName & "' completed.")
 
+Exit Sub
+
+ErrorHandler:
+    If Err.Number = 58 Then 'Folder already exists
+        objFileSystem.DeleteFolder (varDbDocFolder)
+        
+        Resume
+        
+    End If
+    
 End Sub
 
 
