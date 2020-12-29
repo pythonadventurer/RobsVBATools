@@ -498,10 +498,13 @@ Debug.Print "Creating Tables documentaton..."
 Dim varTableDef As TableDef
 
 For Each varTableDef In CurrentDb.TableDefs
-    Call DocTableZim(varTableDef.Name, objFileSystem.BuildPath(varDbDocFolder, "Tables\" & _
-                                                           Replace(varTableDef.Name, " ", "_") & ".txt"))
+    'Exclude system tables
+    If Left(varTableDef.Name, 4) <> "MSys" And Left(varTableDef.Name, 1) <> "~" Then
+        Call DocTableZim(varTableDef.Name, objFileSystem.BuildPath(varDbDocFolder, "Tables\" & _
+                                                               Replace(varTableDef.Name, " ", "_") & ".txt"))
                                                            
-    Debug.Print varTableDef.Name; " completed."
+        Debug.Print varTableDef.Name; " completed."
+    End If
     
 Next varTableDef
 
