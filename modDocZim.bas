@@ -370,6 +370,7 @@ If resp = vbNo Then
 End If
 
 Dim objFileSystem As Object
+
 Set objFileSystem = CreateObject("Scripting.FileSystemObject")
 
 'Get the name of the current Db, without directories,
@@ -402,8 +403,12 @@ varFolders.Add ("Reports")
 varFolders.Add ("Modules")
 varDbDocFolder = objFileSystem.BuildPath(DocumentationDirectory, varDbName)
  
- 
-On Error GoTo ErrorHandler
+If FolderExists(varDbDocFolder) Then
+    'Build Path creates a directory with the "\" at the end, but it must be left off
+    'in order for DeleteFolder to work.
+    objFileSystem.DeleteFolder (Left(varDbDocFolder, Len(varDbDocFolder) - 1))
+    
+End If
 
 objFileSystem.CreateFolder (varDbDocFolder)
  
@@ -502,15 +507,7 @@ Next varTableDef
 
 MsgBox ("Documentation of database '" & varDbName & "' completed.")
 
-Exit Sub
 
-ErrorHandler:
-    If Err.Number = 58 Then 'Folder already exists
-        objFileSystem.DeleteFolder (varDbDocFolder)
-        
-        Resume
-        
-    End If
     
 End Sub
 
