@@ -11,7 +11,7 @@ Microsoft Access 2016.
 Examples of What's In Here
 ==========================
 * Copy files between folders
-* Create ZimWiki-based documentation of an Access database.
+* Create Markdown and ZimWiki based documentation of an Access database.
 * Open a folder in Windows Explorer
 * Get the type of a field in a form or a report
 * Convert a string to Proper Case
